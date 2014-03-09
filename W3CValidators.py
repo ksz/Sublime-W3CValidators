@@ -12,8 +12,10 @@ class AbstractValidator(sublime_plugin.TextCommand):
     region = sublime.Region(0, self.view.size())
     fileContents = self.view.substr(region)
     params = { 'fragment':fileContents, 'doctype': format, 'output':'json' }
-    encodedParams = urllib.urlencode(params)
-    output = urllib.urlopen(validatorUrl, encodedParams).read()
+    encodedParams = urllib.parse.urlencode(params)
+    binary_data = encodedParams.encode('utf-8')
+    output = urllib.request.urlopen(validatorUrl, binary_data).read().decode("utf-8")
+    
     results = json.loads(output)
     messageContents = ''
     if not results['messages']:
